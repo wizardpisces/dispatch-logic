@@ -2,6 +2,7 @@ package linkedList
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -71,12 +72,16 @@ func (l *LinkedList) Display() string {
 	length := l.len
 	var val_list []string
 	for length != 0 {
-		s, ok := node.Value.(string)
-		if ok {
-			val_list = append(val_list, s)
-		} else {
-			val_list = append(val_list, "s")
+
+		switch node.Value.(type) {
+		case int:
+			s := node.Value.(int)
+			val_list = append(val_list, strconv.Itoa(s))
+		case string:
+			val_list = append(val_list, node.Value.(string))
+
 		}
+
 		node = node.next
 		length--
 	}
