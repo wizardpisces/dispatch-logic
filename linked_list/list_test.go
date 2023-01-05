@@ -43,6 +43,7 @@ func TestDisplay(t *testing.T) {
 	l.PushBack(1)
 	l.PushBack(2)
 	l.PushBack(3)
+	l.PushFront(4)
 	result := l.Display()
-	assert.Equal(t, "1->2->3", result)
+	assert.Equal(t, "4->1->2->3", result)
 }

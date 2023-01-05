@@ -37,10 +37,10 @@ func New() *LinkedList {
 // }
 
 func (l *LinkedList) insert(e, at *Node) *Node {
-	e.prev = at
 	e.next = at.next
-	e.prev.next = e
-	e.next.prev = e
+	e.prev = at
+	at.next.prev = e
+	at.next = e
 
 	l.len++
 	return e
@@ -65,6 +65,11 @@ func (l *LinkedList) PushBack(v any) *Node {
 	return l.insertValue(v, l.head.prev)
 }
 
+func (l *LinkedList) PushFront(v any) *Node {
+	// l.lazyInit()
+	return l.insertValue(v, &l.head)
+}
+
 func (l *LinkedList) Len() int { return l.len }
 
 func (l *LinkedList) Display() string {
@@ -75,11 +80,11 @@ func (l *LinkedList) Display() string {
 
 		switch node.Value.(type) {
 		case int:
-			s := node.Value.(int)
-			val_list = append(val_list, strconv.Itoa(s))
+			val_list = append(val_list, strconv.Itoa(node.Value.(int)))
 		case string:
 			val_list = append(val_list, node.Value.(string))
-
+		default:
+			val_list = append(val_list, node.Value.(string))
 		}
 
 		node = node.next
