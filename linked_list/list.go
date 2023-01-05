@@ -10,6 +10,7 @@ type Node struct {
 	Value any
 	next  *Node
 	prev  *Node
+	list  *LinkedList
 }
 type LinkedList struct {
 	head Node // 头节点
@@ -42,6 +43,8 @@ func (l *LinkedList) insert(e, at *Node) *Node {
 	at.next.prev = e
 	at.next = e
 
+	e.list = l
+
 	l.len++
 	return e
 }
@@ -70,14 +73,20 @@ func (l *LinkedList) PushFront(v any) *Node {
 	return l.insertValue(v, &l.head)
 }
 
+// Next returns the next list element or nil.
+func (node *Node) Next() *Node {
+	if p := node.next; p != &node.list.head {
+		return p
+	}
+	return nil
+}
+
 func (l *LinkedList) Len() int { return l.len }
 
 func (l *LinkedList) Display() string {
-	node := l.Front()
-	length := l.len
 	var val_list []string
-	for length != 0 {
 
+	for node := l.Front(); node != nil; node = node.Next() {
 		switch node.Value.(type) {
 		case int:
 			val_list = append(val_list, strconv.Itoa(node.Value.(int)))
@@ -86,9 +95,6 @@ func (l *LinkedList) Display() string {
 		default:
 			val_list = append(val_list, node.Value.(string))
 		}
-
-		node = node.next
-		length--
 	}
 
 	result := strings.Join(val_list, "->")

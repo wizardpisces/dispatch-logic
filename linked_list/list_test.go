@@ -17,14 +17,11 @@ func TestList(t *testing.T) {
 	l.InsertAfter(2, e1)
 	assert.Equal(t, l.Len(), 4)
 
-	length := l.Len()
 	var builder strings.Builder
-	node := l.Front()
-	for length != 0 {
-		str := fmt.Sprintf("%v", node.Value)
+
+	for e := l.Front(); e != nil; e = e.Next() {
+		str := fmt.Sprintf("%v", e.Value)
 		builder.WriteString(str)
-		node = node.Next()
-		length--
 	}
 	assert.Equal(t, "1234", builder.String())
 }
