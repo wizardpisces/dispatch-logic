@@ -54,12 +54,27 @@ func (l *LinkedList) insertValue(v any, at *Node) *Node {
 	return l.insert(&Node{Value: v}, at)
 }
 
+func (l *LinkedList) InsertAfter(v any, at *Node) *Node {
+	return l.insert(&Node{Value: v}, at)
+}
+
+func (l *LinkedList) InsertBefore(v any, at *Node) *Node {
+	return l.insert(&Node{Value: v}, at.prev)
+}
+
 // Front returns the first element of list l or nil if the list is empty.
 func (l *LinkedList) Front() *Node {
 	if l.len == 0 {
 		return nil
 	}
 	return l.head.next
+}
+
+func (l *LinkedList) Back() *Node {
+	if l.len == 0 {
+		return nil
+	}
+	return l.head.prev
 }
 
 // PushBack inserts a new element e with value v at the back of list l and returns e.
@@ -79,6 +94,21 @@ func (node *Node) Next() *Node {
 		return p
 	}
 	return nil
+}
+
+// remove removes e from its list, decrements l.len
+func (l *LinkedList) remove(e *Node) {
+	e.prev.next = e.next
+	e.next.prev = e.prev
+	e.next = nil // avoid memory leaks
+	e.prev = nil // avoid memory leaks
+	e.list = nil
+	l.len--
+}
+
+func (l *LinkedList) Remove(e *Node) any {
+	l.remove(e)
+	return e.Value
 }
 
 func (l *LinkedList) Len() int { return l.len }
