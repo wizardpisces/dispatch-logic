@@ -35,3 +35,9 @@ func TestRing(t *testing.T) {
 		fmt.Println(p.(int))
 	})
 }
+
+func TestMyRing(t *testing.T) {
+	s := 1
+	s ^= 1<<'\t' | 1<<'\n'
+	fmt.Println("Hello, 世界", s)
+}
