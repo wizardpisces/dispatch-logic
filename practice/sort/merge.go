@@ -1,5 +1,9 @@
 package sort
 
+import "sync"
+
+const Threshold = 1 << 20
+
 func MergeSort(items []int) []int {
 	if len(items) < 2 {
 		return items
@@ -9,24 +13,59 @@ func MergeSort(items []int) []int {
 	return merge(first, second)
 }
 
+func MergeSortParallel(s []int) []int {
+	len := len(s)
+	// left := make(chan []int)
+	left := []int{}
+	right := []int{}
+
+	if len > 1 {
+		if len <= Threshold { // Sequential
+			// return MergeSort(s)
+		} else { // Parallel
+			middle := len / 2
+
+			var wg sync.WaitGroup
+			wg.Add(1)
+
+			go func() {
+				defer wg.Done()
+				// left <- MergeSortParallel(s[:middle])
+				left = MergeSortParallel(s[:middle])
+			}()
+
+			// go func() {
+			// 	right <- MergeSortParallel(s[middle:])
+			// }()
+
+			right = MergeSortParallel(s[middle:])
+
+			wg.Wait()
+			// return merge(<-left, right)
+			return merge(left, right)
+		}
+	}
+	return s
+}
+
 func merge(a []int, b []int) []int {
-	final := []int{}
+	Result := []int{}
 	i := 0
 	j := 0
 	for i < len(a) && j < len(b) {
 		if a[i] < b[j] {
-			final = append(final, a[i])
+			Result = append(Result, a[i])
 			i++
 		} else {
-			final = append(final, b[j])
+			Result = append(Result, b[j])
 			j++
 		}
 	}
 	for ; i < len(a); i++ {
-		final = append(final, a[i])
+		Result = append(Result, a[i])
 	}
 	for ; j < len(b); j++ {
-		final = append(final, b[j])
+		Result = append(Result, b[j])
 	}
-	return final
+	return Result
 }
