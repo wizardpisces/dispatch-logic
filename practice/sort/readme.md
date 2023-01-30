@@ -1,7 +1,7 @@
 ## Introduction
 
 ```
-go trace
+go test
 ```
 
 ## Reference

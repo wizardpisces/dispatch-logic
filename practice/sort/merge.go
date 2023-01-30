@@ -8,42 +8,36 @@ func MergeSort(items []int) []int {
 	if len(items) < 2 {
 		return items
 	}
-	first := MergeSort(items[:len(items)/2])
-	second := MergeSort(items[len(items)/2:])
-	return merge(first, second)
+	left := MergeSort(items[:len(items)/2])
+	right := MergeSort(items[len(items)/2:])
+	return merge(left, right)
 }
 
 func MergeSortParallel(s []int) []int {
 	len := len(s)
 	// left := make(chan []int)
 	left := []int{}
-	right := []int{}
-
 	if len > 1 {
-		if len <= Threshold { // Sequential
-			// return MergeSort(s)
-		} else { // Parallel
-			middle := len / 2
+		middle := len / 2
 
-			var wg sync.WaitGroup
-			wg.Add(1)
+		var wg sync.WaitGroup
+		wg.Add(1)
 
-			go func() {
-				defer wg.Done()
-				// left <- MergeSortParallel(s[:middle])
-				left = MergeSortParallel(s[:middle])
-			}()
+		go func() {
+			defer wg.Done()
+			// left <- MergeSortParallel(s[:middle])
+			left = MergeSortParallel(s[:middle])
+		}()
 
-			// go func() {
-			// 	right <- MergeSortParallel(s[middle:])
-			// }()
+		// go func() {
+		// 	right <- MergeSortParallel(s[middle:])
+		// }()
 
-			right = MergeSortParallel(s[middle:])
+		right := MergeSortParallel(s[middle:])
 
-			wg.Wait()
-			// return merge(<-left, right)
-			return merge(left, right)
-		}
+		wg.Wait()
+		// return merge(<-left, right)
+		return merge(left, right)
 	}
 	return s
 }
