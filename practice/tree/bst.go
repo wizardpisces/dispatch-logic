@@ -4,25 +4,29 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type TreeNode struct {
 	key       int
-	value     string
+	Value     string
 	leftNode  *TreeNode
 	rightNode *TreeNode
 }
 
 type BinarySearchTree struct {
 	root *TreeNode
-	// lock     sync.RWMutex
+	lock sync.RWMutex
 }
 
 func newTreeNode(key int, value string) *TreeNode {
-	return &TreeNode{key: key, value: value}
+	return &TreeNode{key: key, Value: value}
 }
 
 func (bst *BinarySearchTree) InsertNode(key int, value string) *BinarySearchTree {
+	bst.lock.Lock()
+	defer bst.lock.Unlock()
+
 	node := newTreeNode(key, value)
 	if bst.root == nil {
 		bst.root = node
@@ -49,6 +53,8 @@ func insert(parentNode *TreeNode, newNode *TreeNode) {
 }
 
 func (bst *BinarySearchTree) InOrderTraverseTree() []int {
+	bst.lock.RLock()
+	defer bst.lock.RUnlock()
 	var val_list []int
 	var inOrderTraverse func(node *TreeNode)
 
@@ -67,6 +73,8 @@ func (bst *BinarySearchTree) InOrderTraverseTree() []int {
 }
 
 func (bst *BinarySearchTree) MinNode() *TreeNode {
+	bst.lock.RLock()
+	defer bst.lock.RUnlock()
 	if bst.root != nil {
 		return minNode(bst.root)
 	}
@@ -81,6 +89,8 @@ func minNode(node *TreeNode) *TreeNode {
 }
 
 func (bst *BinarySearchTree) MaxNode() *TreeNode {
+	bst.lock.RLock()
+	defer bst.lock.RUnlock()
 	if bst.root != nil {
 		return maxNode(bst.root)
 	}
@@ -95,6 +105,8 @@ func maxNode(node *TreeNode) *TreeNode {
 }
 
 func (bst *BinarySearchTree) SearchNode(key int) bool {
+	bst.lock.RLock()
+	defer bst.lock.RUnlock()
 	return searchNode(bst.root, key)
 }
 
@@ -116,6 +128,9 @@ func searchNode(node *TreeNode, key int) bool {
 }
 
 func (bst *BinarySearchTree) Display() string {
+	bst.lock.RLock()
+	defer bst.lock.RUnlock()
+
 	var val_list []string
 	for _, key := range bst.InOrderTraverseTree() {
 		val_list = append(val_list, strconv.Itoa(key))
@@ -125,4 +140,47 @@ func (bst *BinarySearchTree) Display() string {
 	fmt.Println(result)
 
 	return result
+}
+
+func (bst *BinarySearchTree) DeleteNode(key int) *TreeNode {
+	bst.lock.Lock()
+	defer bst.lock.Unlock()
+	bst.root = deleteNode(bst.root, key)
+	return bst.root
+}
+
+func deleteNode(root *TreeNode, key int) *TreeNode {
+	if root == nil {
+		return root
+	}
+
+	if root.key == key {
+		if root.leftNode == nil {
+			return root.rightNode
+		}
+
+		if root.rightNode == nil {
+			return root.leftNode
+		}
+
+		cur := root.rightNode
+		for cur.leftNode != nil {
+			cur = cur.rightNode
+		}
+
+		cur.leftNode = root.leftNode
+
+		root = root.rightNode
+		return root
+	}
+
+	if root.key < key {
+		root.rightNode = deleteNode(root.rightNode, key)
+	}
+
+	if root.key > key {
+		root.leftNode = deleteNode(root.leftNode, key)
+	}
+
+	return root
 }

@@ -34,6 +34,11 @@ func (s mergeSortSuite) Test_Operation() {
 	s.Equal(true, bst.SearchNode(1))
 	s.Equal(true, bst.SearchNode(2))
 	s.Equal(false, bst.SearchNode(7))
+
+	node := bst.DeleteNode(3)
+	s.Equal("1->2->5->6", bst.Display())
+	s.Equal([]int{1, 2, 5, 6}, bst.InOrderTraverseTree())
+	s.Equal(2, node.key)
 }
 
 func (s mergeSortSuite) Test_InOrder() {
