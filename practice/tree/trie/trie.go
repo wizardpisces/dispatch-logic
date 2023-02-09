@@ -31,11 +31,16 @@ func insert(node *TrieNode, str string) {
 	for _, ch := range str { // 可以解决乱码问题
 		// for i := 0; i < len(str); i++ {
 		if currentNode.children[ch] == nil {
+			// if currentNode.match(str) {
 			currentNode.children[ch] = newNode()
 		}
 		currentNode = currentNode.children[ch]
 	}
 }
+
+// func (t *TrieNode) match(part rune) bool {
+// 	return false
+// }
 
 func (t *Trie) Find(str string) bool {
 	return find(t.root, str)
