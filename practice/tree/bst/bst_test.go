@@ -17,7 +17,7 @@ type mergeSortSuite struct {
 	suite.Suite
 }
 
-func constructBST(keys []int) *BinarySearchTree {
+func constructBSTByInts(keys []int) *BinarySearchTree {
 	bst := BinarySearchTree{}
 	for _, key := range keys {
 		bst.InsertNode(key, strconv.Itoa(key))
@@ -26,7 +26,7 @@ func constructBST(keys []int) *BinarySearchTree {
 }
 
 func (s mergeSortSuite) Test_Operation() {
-	bst := constructBST([]int{2, 3, 1, 6, 5})
+	bst := constructBSTByInts([]int{2, 3, 1, 6, 5})
 	s.Equal("1->2->3->5->6", bst.Display())
 	s.Equal([]int{1, 2, 3, 5, 6}, bst.InOrderTraverseTree())
 	s.Equal(1, bst.MinNode().key)
@@ -52,7 +52,7 @@ func (s mergeSortSuite) Test_InOrder() {
 
 	for _, c := range cases {
 		s.Run(c.name, func() {
-			s.Equal(c.out, constructBST(c.in).InOrderTraverseTree())
+			s.Equal(c.out, constructBSTByInts(c.in).InOrderTraverseTree())
 		})
 	}
 }

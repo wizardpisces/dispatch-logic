@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"strings"
 
 	dispatch "github.com/wizardpisces/dispatch-logic/text"
@@ -43,7 +44,19 @@ func defaultRouter(ctx *gin.Context) {
 	})
 }
 
+func TestGuessingGame() {
+	var s string
+	fmt.Printf("Pick an integer from 0 to 100.\n")
+	answer := sort.Search(100, func(i int) bool {
+		fmt.Printf("Is your number <= %d? ", i)
+		fmt.Scanf("%s", &s)
+		return s != "" && s[0] == 'y'
+	})
+	fmt.Printf("Your number is %d.\n", answer)
+}
+
 func main() {
+	// TestGuessingGame()
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -52,4 +65,5 @@ func main() {
 	})
 	r.GET("/", defaultRouter)
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
 }

@@ -2,6 +2,7 @@ package bst
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -16,6 +17,7 @@ type TreeNode struct {
 
 type BinarySearchTree struct {
 	root *TreeNode
+	// compareFn func(int) bool
 	lock sync.RWMutex
 }
 
@@ -183,4 +185,9 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 	}
 
 	return root
+}
+
+// reference https://pkg.go.dev/sort#Search
+func Search(n int, f func(int) bool) int {
+	return sort.Search(n, f)
 }
