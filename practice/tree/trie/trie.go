@@ -1,5 +1,7 @@
 package trie
 
+import "strings"
+
 type TrieNode struct {
 	children map[rune]*TrieNode
 }
@@ -55,4 +57,20 @@ func find(node *TrieNode, str string) bool {
 		currentNode = currentNode.children[ch]
 	}
 	return true
+}
+
+// Only one * is allowed
+func parsePattern(pattern string) []string {
+	vs := strings.Split(pattern, "/")
+
+	parts := make([]string, 0)
+	for _, item := range vs {
+		if item != "" {
+			parts = append(parts, item)
+			if item[0] == '*' {
+				break
+			}
+		}
+	}
+	return parts
 }
