@@ -38,7 +38,8 @@ func TestList(t *testing.T) {
 }
 
 func TestLinkedList(t *testing.T) {
-	l := New()
+	l := New[int]()
+	// l.PushBack("2")
 	l.PushBack(2)
 	l.PushBack(3)
 	assert.Equal(t, l.Len(), 2)

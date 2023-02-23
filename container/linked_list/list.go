@@ -6,19 +6,19 @@ import (
 	"strings"
 )
 
-type Node struct {
-	Value any
-	next  *Node
-	prev  *Node
-	list  *LinkedList
+type Node[V any] struct {
+	Value V
+	next  *Node[V]
+	prev  *Node[V]
+	list  *LinkedList[V]
 }
-type LinkedList struct {
-	head Node // 头节点
-	len  int  // list长度
+type LinkedList[V any] struct {
+	head Node[V] // 头节点
+	len  int     // list长度
 }
 
 // Init initializes or clears list l.
-func (l *LinkedList) Init() *LinkedList {
+func (l *LinkedList[V]) Init() *LinkedList[V] {
 	l.head.next = &l.head
 	l.head.prev = &l.head
 	l.len = 0
@@ -26,8 +26,8 @@ func (l *LinkedList) Init() *LinkedList {
 }
 
 // New returns an initialized list.
-func New() *LinkedList {
-	l := LinkedList{}
+func New[V any]() *LinkedList[V] {
+	l := LinkedList[V]{}
 	return l.Init()
 }
 
@@ -37,7 +37,7 @@ func New() *LinkedList {
 // 	}
 // }
 
-func (l *LinkedList) insert(e, at *Node) *Node {
+func (l *LinkedList[V]) insert(e, at *Node[V]) *Node[V] {
 	e.next = at.next
 	e.prev = at
 	at.next.prev = e
@@ -50,27 +50,27 @@ func (l *LinkedList) insert(e, at *Node) *Node {
 }
 
 // insertValue is a convenience wrapper for insert(&Element{Value: v}, at).
-func (l *LinkedList) insertValue(v any, at *Node) *Node {
-	return l.insert(&Node{Value: v}, at)
+func (l *LinkedList[V]) insertValue(v V, at *Node[V]) *Node[V] {
+	return l.insert(&Node[V]{Value: v}, at)
 }
 
-func (l *LinkedList) InsertAfter(v any, at *Node) *Node {
-	return l.insert(&Node{Value: v}, at)
+func (l *LinkedList[V]) InsertAfter(v V, at *Node[V]) *Node[V] {
+	return l.insert(&Node[V]{Value: v}, at)
 }
 
-func (l *LinkedList) InsertBefore(v any, at *Node) *Node {
-	return l.insert(&Node{Value: v}, at.prev)
+func (l *LinkedList[V]) InsertBefore(v V, at *Node[V]) *Node[V] {
+	return l.insert(&Node[V]{Value: v}, at.prev)
 }
 
 // Front returns the first element of list l or nil if the list is empty.
-func (l *LinkedList) Front() *Node {
+func (l *LinkedList[V]) Front() *Node[V] {
 	if l.len == 0 {
 		return nil
 	}
 	return l.head.next
 }
 
-func (l *LinkedList) Back() *Node {
+func (l *LinkedList[V]) Back() *Node[V] {
 	if l.len == 0 {
 		return nil
 	}
@@ -78,18 +78,18 @@ func (l *LinkedList) Back() *Node {
 }
 
 // PushBack inserts a new element e with value v at the back of list l and returns e.
-func (l *LinkedList) PushBack(v any) *Node {
+func (l *LinkedList[V]) PushBack(v V) *Node[V] {
 	// l.lazyInit()
 	return l.insertValue(v, l.head.prev)
 }
 
-func (l *LinkedList) PushFront(v any) *Node {
+func (l *LinkedList[V]) PushFront(v V) *Node[V] {
 	// l.lazyInit()
 	return l.insertValue(v, &l.head)
 }
 
 // Next returns the next list element or nil.
-func (node *Node) Next() *Node {
+func (node *Node[V]) Next() *Node[V] {
 	if p := node.next; p != &node.list.head {
 		return p
 	}
@@ -97,7 +97,7 @@ func (node *Node) Next() *Node {
 }
 
 // remove removes e from its list, decrements l.len
-func (l *LinkedList) remove(e *Node) {
+func (l *LinkedList[V]) remove(e *Node[V]) {
 	e.prev.next = e.next
 	e.next.prev = e.prev
 	e.next = nil // avoid memory leaks
@@ -106,24 +106,24 @@ func (l *LinkedList) remove(e *Node) {
 	l.len--
 }
 
-func (l *LinkedList) Remove(e *Node) any {
+func (l *LinkedList[V]) Remove(e *Node[V]) V {
 	l.remove(e)
 	return e.Value
 }
 
-func (l *LinkedList) Len() int { return l.len }
+func (l *LinkedList[V]) Len() int { return l.len }
 
-func (l *LinkedList) Display() string {
+func (l *LinkedList[V]) Display() string {
 	var val_list []string
 
 	for node := l.Front(); node != nil; node = node.Next() {
-		switch node.Value.(type) {
+		switch any(node.Value).(type) {
 		case int:
-			val_list = append(val_list, strconv.Itoa(node.Value.(int)))
+			val_list = append(val_list, strconv.Itoa(any(node.Value).(int)))
 		case string:
-			val_list = append(val_list, node.Value.(string))
+			val_list = append(val_list, any(node.Value).(string))
 		default:
-			val_list = append(val_list, node.Value.(string))
+			val_list = append(val_list, any(node.Value).(string))
 		}
 	}
 
