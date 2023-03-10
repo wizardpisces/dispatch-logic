@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/wizardpisces/dispatch-logic/structures"
 )
 
 type C int
@@ -20,15 +21,10 @@ const (
 )
 
 func Test_PruneTree(t *testing.T) {
-	assert.Equal(t, []Digit{nil, 1, 0, 0, 1}, InOrderTraverseTree(ConstructTree([]Digit{1, nil, 0, 0, 1})))
-	assert.Equal(t, []Digit{0, 0, 0, 1, 0, 1, 1}, InOrderTraverseTree(ConstructTree([]Digit{1, 0, 1, 0, 0, 0, 1})))
 
-	assert.Equal(t, []Digit{1, nil, 0, 0, 1}, SerializeTree(ConstructTree([]Digit{1, nil, 0, 0, 1})))
+	assert.Equal(t, []any{1, nil, 0, nil, 1}, structures.TransformToVal(structures.SerializeTree(PruneTree(structures.ConstructTree(structures.TransformToPointer[int]([]any{1, nil, 0, 0, 1}))))))
+	assert.Equal(t, []any{1, nil, 1, nil, 1}, structures.TransformToVal(structures.SerializeTree(PruneTree(structures.ConstructTree(structures.TransformToPointer[int]([]any{1, 0, 1, 0, 0, 0, 1}))))))
 
-	assert.Equal(t, []Digit{1, nil, 0, nil, 1}, SerializeTree(PruneTree(ConstructTree([]Digit{1, nil, 0, 0, 1}))))
-	assert.Equal(t, []Digit{1, nil, 1, nil, 1}, SerializeTree(PruneTree(ConstructTree([]Digit{1, 0, 1, 0, 0, 0, 1}))))
-
-	// assert.Equal(t, 0, Zero)
-	// assert.Equal(t, 0, C0)
-	// assert.Equal(t, 0, D0)
+	assert.Equal(t, 0, C0)
+	assert.Equal(t, 0, D0)
 }
